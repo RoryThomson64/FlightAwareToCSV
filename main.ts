@@ -1,5 +1,10 @@
 import { readFileSync, writeFileSync, openSync } from "fs";
-const path = "./trackpoll.rvt.json";
+import { exit } from "process";
+if (process.argv.length < 3) {
+  console.log("Usage: FlightAwareToCSV [FilePath]");
+  exit();
+}
+const path = process.argv[2];
 const json = JSON.parse(readFileSync(path, "utf8"));
 const flights = json.flights;
 
@@ -45,16 +50,7 @@ Object.values(flights).forEach((flight: any, flightIndex: number) => {
     },
     { altPoints: [], gsPoints: [], coords: [] } as points
   );
-  //   function convertTZ(date, tzString: string): Date {
-  //     return new Date(
-  //       (typeof date === "string" ? new Date(date) : date).toISOString("en-US", {
-  //         timeZone:
-  //           tzString[0] !== ":"
-  //             ? tzString
-  //             : tzString.substring(1, tzString.length),
-  //       })
-  //     );
-  //   }
+
   type pointTypes = gsPoint[] | altPoint[] | coord[];
   const dateFormatter = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
