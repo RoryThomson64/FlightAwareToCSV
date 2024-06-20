@@ -45,13 +45,40 @@ Object.values(flights).forEach((flight: any, flightIndex: number) => {
     },
     { altPoints: [], gsPoints: [], coords: [] } as points
   );
-
+  //   function convertTZ(date, tzString: string): Date {
+  //     return new Date(
+  //       (typeof date === "string" ? new Date(date) : date).toISOString("en-US", {
+  //         timeZone:
+  //           tzString[0] !== ":"
+  //             ? tzString
+  //             : tzString.substring(1, tzString.length),
+  //       })
+  //     );
+  //   }
   type pointTypes = gsPoint[] | altPoint[] | coord[];
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    hour12: false,
+    minute: "numeric",
+    timeZoneName: "short",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    timeZone:
+      flight.origin.TZ[0] === ":"
+        ? flight.origin.TZ.substring(1, flight.origin.TZ.length)
+        : flight.origin.TZ,
+  });
   Object.entries(processed_track).forEach((entry: [string, pointTypes]) => {
     const fileName = "./" + entry[0] + "_" + flightIndex + ".csv";
     const file = openSync(fileName, "w");
+
     entry[1].forEach((point) => {
-      let str = new Date(point.time) + ",";
+      //   let str = convertTZ(new Date(point.time * 1000), flight.origin.TZ) + ",";
+      let str =
+        dateFormatter.format(new Date(point.time * 1000)).replace(",", "") +
+        ",";
+
       switch (point.type) {
         case "alt":
           str += point.alt + "\n";
