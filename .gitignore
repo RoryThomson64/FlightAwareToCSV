@@ -1,1 +1,4 @@
 *.js
+*.rvt.json
+node_modules
+*.csv
